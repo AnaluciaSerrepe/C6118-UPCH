@@ -1,6 +1,6 @@
 ---
-title: "Análisis de las condiciones del océano frente a Perú durante mi primer año de vida"
-author: "Analucia"
+title: "Análisis de las condiciones oceanográficas superficiales frente a Perú durante el año 1988"
+author: "Analucía del Rosario Serrepe Huamaní"
 output: html_document
 ---
 
