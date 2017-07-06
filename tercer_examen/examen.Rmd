@@ -5,6 +5,7 @@ output: html_document
 ---
 
 ## Introducción
+Las principales variables climáticas tales como la temperatura superficial del mar y la salinidad, son de gran utilidad para caracterizar o determinar las condiciones instantáneas del oceáno y su relación directa con la atmósfera, asi mismo permite pronosticar a distintos niveles de escalas espaciales y temporales.
 
 ## Materiales y métodos
 
