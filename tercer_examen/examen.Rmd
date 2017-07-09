@@ -35,7 +35,7 @@ Para obtener las imágenes, se utilizaron una serie de códigos, que se observar
 
 ## 3. Resultados y discusión
 
-###3.1 Análisis de Temperatura Superficial del Mar 
+### 3.1 Análisis de Temperatura Superficial del Mar 
 
 ```{r eval=FALSE,echo=TRUE}
 #Se abre los datos de temperatura superficial del mar
@@ -49,7 +49,7 @@ TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
 image.map(lon, lat, TSM_mean, main="Gráfica de Distribución de la Temperatura Superficial del Mar en el año 1988")
 ```
 
-####Gráficos de Anomalías de la Temperatura Superficial del Mar
+#### Gráficos de Anomalías de la Temperatura Superficial del Mar
 
 ```{r}
 Temp = nc_open("datos/sst.nc4")
@@ -74,9 +74,7 @@ image.map(lon, lat, ATSM_enero, main="Anomalías de TSM")
 ```
 
 
-
-
-####Evolución de la Temperatura Superficial del Mar para todos los meses
+#### Evolución de la Temperatura Superficial del Mar para todos los meses
 
 ```{r}
 Temp = nc_open("datos/sst.nc4")
@@ -106,7 +104,7 @@ for(i in 1:12)
 ```
 
 
-###3.2 Análisis de la Salinidad Superficial del Mar
+### 3.2 Análisis de la Salinidad Superficial del Mar
 
 ```{r}
 Sali = nc_open("datos/sss.nc4")
@@ -119,9 +117,9 @@ image.map(lon, lat, sali_mean, main="Gráfica de Distribución Promedio de Salin
 ```
 
 
-###3.3 Análisis espacial y temporal de la Clorofila Total
+### 3.3 Análisis espacial y temporal de la Clorofila Total
 
-####Gráfica de la Clorofila del Fitoplancton Pequeño
+#### Gráfica de la Clorofila del Fitoplancton Pequeño
 
 ```{r}
 sphy = nc_open("datos/sphy.nc4")
@@ -132,7 +130,7 @@ scloro_mean = apply(sclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = 
 image.map(lon, lat, scloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
 ```
 
-####Gráfica de la Clorofila del Fitoplancton Grande
+#### Gráfica de la Clorofila del Fitoplancton Grande
 
 ```{r}
 lphy = nc_open("datos/lphy.nc4")
@@ -143,7 +141,7 @@ lcloro_mean = apply(lclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = 
 image.map(lon, lat, lcloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
 ```
 
-####Gráfica de la Clorofila Total
+#### Gráfica de la Clorofila Total
 
 ## 4. Conclusiones
 
