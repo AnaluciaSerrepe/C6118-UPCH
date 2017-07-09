@@ -3,18 +3,19 @@ title: "Análisis de las condiciones oceanográficas superficiales frente a Per�
 author: "Analucía del Rosario Serrepe Huamaní"
 output: html_document
 ---
+--------------------------------------------------------------
+## 1. Introducción
 
-## Introducción
 Las principales variables oceanográficas tales como la temperatura superficial del mar y la salinidad, son de gran utilidad para caracterizar o determinar las condiciones instantáneas del oceáno y su relación directa con la atmósfera, permitiendo describir y pronosticar eventos climáticos y procesos que impacten a distintos niveles de escalas espaciales y temporales. Por otro lado, es importante medir las variables relacionadas al componente biológico como clorofila que directamente refleja la productividad primaria, que está ligada a las pesquerías.
 
-En ese contexto, el presente informe tiene por objetivo analizar la temperatura, la salinidad y la clorofila del año 1988.
+En ese contexto, el presente informe tiene por objetivo analizar y caracterizar la zona superficial del mar peruano en relación a la temperatura, la salinidad y la clorofila para un período específico, en este caso para el año 1988. 
 
+## 2. Materiales y metología
 
+###2.1 Datos *in situ*
 
-
-## Materiales y métodos
-
-Los materiales para el análisis de las condiciones oceanográficas será la metadata proporcionada del archivo netCDF, que incluye datos de temperatura superficial del mar (TSM), salinidad superficial del mar (SSM) y clorofila. Se requiere también la instalación de los paquetes ncdf4,fields y kali para el desarrollos de mapas y gráficas.
+Los materiales para el análisis de las condiciones oceanográficas fue la metadata proporcionada del archivo netCDF, que incluye datos *in situ* de temperatura superficial del mar (TSM), salinidad superficial del mar (SSM) y clorofila en un período de 46 años desde 1949 hasta el año 2005, ubicados entre las longitudes: 69.5°W-93.5°W y la latitudes 6.5°N-20.5°S.
+Se requirió también la instalación del software de programación R con los paquetes ncdf4 `library(ncdf4)`, fields `library(fields)` y kali `library(kali)`.
 
 ```{r include=FALSE}
 library(ncdf4)
@@ -22,47 +23,144 @@ library(fields)
 library(kali)
 ```
 
+###2.2 Procesamiento de las imágenes
 
-## Resultados y discusión
+Para obtener las imágenes, se utilizaron una serie de códigos, que se observarán en los resultados del informe para permitan reproducir las mismas grágicos.
 
-Análisis de Temperatura Superficial del Mar 
+- La temperatura superficial del mar (TSM) se analizó calculando un promedio de temperaturas de los meses correspondientes al año 1988 y luego se obtuvo un gráfico de temperatura promedio anual. 
+- Los gráficos de anomalías se obtuvieron haciendo una diferencia entre los valores de TSM de 1988 y el promedio de TSM de los 46 años.
+- Para observar la evolución mesual de la TSM se colocaron todos las gráficos de climatologías de cada mes en un solo espacio.
+
+- El mismo procedimiento se realizó para las variables salinidad superficial del mar y la clorofila, adicionalmente en el caso de la clorofila se calcularon los valores totales (la clorofila que representa el fitoplancton pequeño y clorofila del fitoplancton grande) para obtener gráficos de clorofila total. 
+
+## 3. Resultados y discusión
+
+###3.1 Análisis de Temperatura Superficial del Mar 
+
+```{r eval=FALSE,echo=TRUE}
+#Se abre los datos de temperatura superficial del mar
+Temp = nc_open("datos/sst.nc4")
+TSM = ncvar_get(Temp, "to")
+lat = ncvar_get(Temp, "latitude")
+lon = ncvar_get(Temp, "longitude") - 360
+time = ncvar_get(Temp, "time")
+#Se calcula el promedio anual (1988) y se grafica
+TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+image.map(lon, lat, TSM_mean, main="Gráfica de Distribución de la Temperatura Superficial del Mar en el año 1988")
+```
+
+####Gráficos de Anomalías de la Temperatura Superficial del Mar
+
 ```{r}
 Temp = nc_open("datos/sst.nc4")
 TSM = ncvar_get(Temp, "to")
 lat = ncvar_get(Temp, "latitude")
 lon = ncvar_get(Temp, "longitude") - 360
-image.map(lon, lat, TSM[,,349])
+time = ncvar_get(Temp, "time")
+
+TSM_allyears = apply(TSM[,,1:552], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+ATSM1988 = TSM_allyears - TSM_mean
+image.map(lon, lat, ATSM1988, main="Gráfica de Anomalías de la Temperatura Superficial del Mar en el año 1988")
 ```
+
+
+```{r}
+ATSM_enero = TSM_allyears - TSM[,,350]
+TSM_enero = TSM[,,350]
+par(mfrow=c(1,2))
+image.map(lon, lat, TSM_enero, main="TSM")
+image.map(lon, lat, ATSM_enero, main="Anomalías de TSM")
+```
+
+
+
+
+####Evolución de la Temperatura Superficial del Mar para todos los meses
 
 ```{r}
 Temp = nc_open("datos/sst.nc4")
-STM = ncvar_get(Temp, "to")
+TSM = ncvar_get(Temp, "to")
 lat = ncvar_get(Temp, "latitude")
 lon = ncvar_get(Temp, "longitude") - 360
-image.map(lon, lat, STM[,,356])
+time = ncvar_get(Temp, "time")
+
+year1988=time[350:361]
+
+meses=rep(1:12,length=length(year1988))
+
+for(i in 1:12){
+  apply(TSM[,,meses==1],MARGIN=c(1,2),
+        FUN=mean,na.rm=TRUE)}
+
+clim=array(dim=c(dim(TSM)[1:2],12))
+
+for(i in 1:12){
+  clim[,,i]=apply(TSM[,,meses==i],MARGIN=c(1,2),
+                  FUN=mean,na.rm=TRUE)
+}
+
+par(mfrow=c(4,3),mar=c(4,4,1,1))
+for(i in 1:12)
+  image.map(lon,lat,clim[,,i])
 ```
+
+
+###3.2 Análisis de la Salinidad Superficial del Mar
+
 ```{r}
 Sali = nc_open("datos/sss.nc4")
 SSM = ncvar_get(Sali, "so")
 lat = ncvar_get(Sali, "latitude")
 lon = ncvar_get(Sali, "longitude") - 360
 time = ncvar_get(Sali, "time")
+sali_mean = apply(SSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+image.map(lon, lat, sali_mean, main="Gráfica de Distribución Promedio de Salinidad en el año 1988")
 ```
 
-Clorofila
+
+###3.3 Análisis espacial y temporal de la Clorofila Total
+
+####Gráfica de la Clorofila del Fitoplancton Pequeño
+
 ```{r}
 sphy = nc_open("datos/sphy.nc4")
 sclorofila = ncvar_get(sphy, "intpp")
 lat = ncvar_get(sphy, "latitude")
 lon = ncvar_get(sphy, "longitude") - 360
-scloro_mean = apply(sclorofila[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+scloro_mean = apply(sclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
 image.map(lon, lat, scloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
 ```
 
+####Gráfica de la Clorofila del Fitoplancton Grande
 
+```{r}
+lphy = nc_open("datos/lphy.nc4")
+lclorofila = ncvar_get(lphy, "intpp")
+lat = ncvar_get(lphy, "latitude")
+lon = ncvar_get(lphy, "longitude") - 360
+lcloro_mean = apply(lclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+image.map(lon, lat, lcloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
+```
 
+####Gráfica de la Clorofila Total
 
-## Conclusiones
+## 4. Conclusiones
 
-## Referencias
+  1. 
+  2. 
+  3. 
+  4. 
 
+## 5. Referencias
+
+Takahashi, K. 2017. Estimación de la distribución de la temperatura superficial del mar. Boletín Técnico "Generación de modelos climáticos para el pronóstico de la ocurrencia del Fenómeno El Niño". Instituto Geofísico del Perú. Pag 8-10. [Archivo PDF](http://www.met.igp.gob.pe/publicaciones/Divulgacion_PPR_El_Nino_IGP_201702.pdf)
+
+Quispe, D., Graco, M., Correa, D., Tam, J., Gutiérrez, D., Morón, O., Flores, G. & Yamashiro, C. (2010). Variabilidad espacio-temporal de condiciones hidrofísicas en Bahía Independencia, Pisco – Perú. Ecología Aplicada 9 (1):9-18.
+[Archivo PDF](http://www.imarpe.pe/imarpe/imagenes/portal/imarpe/ecap-9-9-quispe-2010-rnp.pdf)
+
+Santander, E., Herrera, L., & Merino, C. (2003). Fluctuación diaria del fitoplancton en la capa superficial del océano durante la primavera de 1997 en el norte de Chile (20°18´S): II. Composición específica y abundancia celular. Revista de biología marina y oceanografía, 38(1), 13-25. [Archivo PDF](http://www.scielo.cl/pdf/revbiolmar/v38n1/art02.pdf)
+
+Morón, O. (2000). Características del ambiente marino frente a la costa peruana. Boletin del Instituto del Mar del Perú 19, 179–204. [Archivo PDF](http://www.imarpe.gob.pe/paita/publicaciones/caract_del_amb_marino.pdf)
+
+Quezada, M., Paredes, R., Carrillo, F., & Rojas, J. (2014). Variabilidad espacial y temporal de la concentración de clorofila-a en el mar peruano usando imágenes MODIS-AQUA. Revista De Investigación de Física, 14(02). [Archivo PDF](http://ateneo.unmsm.edu.pe/ateneo/bitstream/123456789/2791/1/revista_de_investigacion_de_fisica06v14n2_2011.pdf)
