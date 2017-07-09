@@ -7,16 +7,14 @@ output: html_document
 ## Introducción
 Las principales variables oceanográficas tales como la temperatura superficial del mar y la salinidad, son de gran utilidad para caracterizar o determinar las condiciones instantáneas del oceáno y su relación directa con la atmósfera, permitiendo describir y pronosticar eventos climáticos y procesos que impacten a distintos niveles de escalas espaciales y temporales. Por otro lado, es importante medir las variables relacionadas al componente biológico como clorofila que directamente refleja la productividad primaria, que está ligada a las pesquerías.
 
-El presente informe 
+En ese contexto, el presente informe tiene por objetivo analizar la temperatura, la salinidad y la clorofila del año 1988.
 
 
 
 
 ## Materiales y métodos
 
-
-Los materiales para el análisis de la temperatura serán la metadata proporcionada del archivo netCDF. Se requiere también la instalación de los paquetes ncdf4,fields y kali.
-Se tomaron datos de salinidad y ph
+Los materiales para el análisis de las condiciones oceanográficas será la metadata proporcionada del archivo netCDF, que incluye datos de temperatura superficial del mar (TSM), salinidad superficial del mar (SSM) y clorofila. Se requiere también la instalación de los paquetes ncdf4,fields y kali para el desarrollos de mapas y gráficas.
 
 ```{r include=FALSE}
 library(ncdf4)
@@ -25,32 +23,43 @@ library(kali)
 ```
 
 
-
 ## Resultados y discusión
 
+Análisis de Temperatura Superficial del Mar 
 ```{r}
-nc = nc_open("datos/sst.nc4")
-sst = ncvar_get(nc, "to")
-lat = ncvar_get(nc, "latitude")
-lon = ncvar_get(nc, "longitude") - 360
-sss = ncvar_get(nc,)
-image.map(lon, lat, sst[,,349])
+Temp = nc_open("datos/sst.nc4")
+TSM = ncvar_get(Temp, "to")
+lat = ncvar_get(Temp, "latitude")
+lon = ncvar_get(Temp, "longitude") - 360
+image.map(lon, lat, TSM[,,349])
 ```
 
 ```{r}
-nc1 = nc_open("datos/sst.nc4")
-sst = ncvar_get(nc1, "to")
-lat = ncvar_get(nc1, "latitude")
-lon = ncvar_get(nc1, "longitude") - 360
-image.map(lon, lat, sst[,,356])
+Temp = nc_open("datos/sst.nc4")
+STM = ncvar_get(Temp, "to")
+lat = ncvar_get(Temp, "latitude")
+lon = ncvar_get(Temp, "longitude") - 360
+image.map(lon, lat, STM[,,356])
 ```
 ```{r}
-sali = nc_open("datos/sss.nc4")
-sss = ncvar_get(sali, "so")
-lat = ncvar_get(sali, "latitude")
-lon = ncvar_get(sali, "longitude") - 360
-image.map(lon, lat, sss[,,356])
+Sali = nc_open("datos/sss.nc4")
+SSM = ncvar_get(Sali, "so")
+lat = ncvar_get(Sali, "latitude")
+lon = ncvar_get(Sali, "longitude") - 360
+time = ncvar_get(Sali, "time")
 ```
+
+Clorofila
+```{r}
+sphy = nc_open("datos/sphy.nc4")
+sclorofila = ncvar_get(sphy, "intpp")
+lat = ncvar_get(sphy, "latitude")
+lon = ncvar_get(sphy, "longitude") - 360
+scloro_mean = apply(sclorofila[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+image.map(lon, lat, scloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
+```
+
+
 
 
 ## Conclusiones
