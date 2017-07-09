@@ -157,7 +157,7 @@ lon = ncvar_get(Temp, &quot;longitude&quot;) - 360
 time = ncvar_get(Temp, &quot;time&quot;)
 #Se calcula el promedio anual (1988) y se grafica
 TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, TSM_mean, main=&quot;Gráfica de Distribución de la Temperatura Superficial del Mar en el año 1988&quot;)</code></pre>
+image.map(lon, lat, TSM_mean, main=&quot;Gráfica de Distribución de la TSM en el año 1988&quot;)</code></pre>
 <div id="graficos-de-anomalias-de-la-temperatura-superficial-del-mar" class="section level4">
 <h4>Gráficos de Anomalías de la Temperatura Superficial del Mar</h4>
 <pre class="r"><code>Temp = nc_open(&quot;datos/sst.nc4&quot;)

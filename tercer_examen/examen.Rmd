@@ -12,7 +12,7 @@ En ese contexto, el presente informe tiene por objetivo analizar y caracterizar 
 
 ## 2. Materiales y metología
 
-###2.1 Datos *in situ*
+### 2.1 Datos *in situ*
 
 Los materiales para el análisis de las condiciones oceanográficas fue la metadata proporcionada del archivo netCDF, que incluye datos *in situ* de temperatura superficial del mar (TSM), salinidad superficial del mar (SSM) y clorofila en un período de 46 años desde 1949 hasta el año 2005, ubicados entre las longitudes: 69.5°W-93.5°W y la latitudes 6.5°N-20.5°S.
 Se requirió también la instalación del software de programación R con los paquetes ncdf4 `library(ncdf4)`, fields `library(fields)` y kali `library(kali)`.
@@ -23,7 +23,7 @@ library(fields)
 library(kali)
 ```
 
-###2.2 Procesamiento de las imágenes
+### 2.2 Procesamiento de las imágenes
 
 Para obtener las imágenes, se utilizaron una serie de códigos, que se observarán en los resultados del informe para permitan reproducir las mismas grágicos.
 
@@ -46,7 +46,7 @@ lon = ncvar_get(Temp, "longitude") - 360
 time = ncvar_get(Temp, "time")
 #Se calcula el promedio anual (1988) y se grafica
 TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, TSM_mean, main="Gráfica de Distribución de la Temperatura Superficial del Mar en el año 1988")
+image.map(lon, lat, TSM_mean, main="Gráfica de Distribución de la TSM en el año 1988")
 ```
 
 #### Gráficos de Anomalías de la Temperatura Superficial del Mar
