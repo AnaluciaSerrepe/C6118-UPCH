@@ -6,7 +6,8 @@ output: html_document
 --------------------------------------------------------------
 ## 1. Introducción
 
-Las principales variables oceanográficas tales como la temperatura superficial del mar y la salinidad, son de gran utilidad para caracterizar o determinar las condiciones instantáneas del oceáno y su relación directa con la atmósfera, permitiendo describir y pronosticar eventos climáticos y procesos que impacten a distintos niveles de escalas espaciales y temporales. Por otro lado, es importante medir las variables relacionadas al componente biológico como clorofila que directamente refleja la productividad primaria, que está ligada a las pesquerías.
+Las principales variables oceanográficas tales como la temperatura superficial del mar y la salinidad, son de gran utilidad para caracterizar o determinar las condiciones instantáneas del oceáno y su relación directa con la atmósfera (Takahashi,2017), permitiendo describir y pronosticar eventos climáticos y procesos que impacten a distintos niveles de escalas espaciales y temporales. Por otro lado, es importante medir las variables relacionadas al componente biológico como clorofila que directamente refleja la productividad primaria, que está ligada a las pesquerías.
+El área marina frente a la costa peruana es uno de los sistema de afloramieno de borde oriental más productivos favorecido por el completo sistema de corrientes superficiales que se intensifican con lo vientos alisios (Morón,2000). De la misma forma, las condiciones climáticas se ven afectadas por los eventos ENSO que influyen directamente en las condiciones normales del mar peruano. 
 
 En ese contexto, el presente informe tiene por objetivo analizar y caracterizar la zona superficial del mar peruano en relación a la temperatura, la salinidad y la clorofila para un período específico, en este caso para el año 1988. 
 
@@ -33,11 +34,12 @@ Para obtener las imágenes, se utilizaron una serie de códigos, que se observar
 
 - El mismo procedimiento se realizó para las variables salinidad superficial del mar y la clorofila, adicionalmente en el caso de la clorofila se calcularon los valores totales (la clorofila que representa el fitoplancton pequeño y clorofila del fitoplancton grande) para obtener gráficos de clorofila total. 
 
-## 3. Resultados y discusión
+## 3. Resultados y Discusiones
 
 ### 3.1 Análisis de Temperatura Superficial del Mar
 
-#### Temperatura Superficial del Mar y Anomalía del año 1988
+La primera figura muestra la distribución espacial de la temperatura superficial del mar (TSM)  en el año 1988, se puede mencionar que ese año se caracterizó por tener mayores valores de temperatura moderada  que fluctúan en un rango de 20°C a  22°C en la parte central y sur de la costa peruana, y un rango de 23°C a 24°C en promedio en la parte costera del norte.
+Para el gráfico de anomalías de la temperatura superficial del mar se observa que no hubo una variación significativa de la temperatura, incluso en parte del sistema marino las temperaturas del mar estuvieron por debajo de sus valores normales.
 
 ```{r echo=TRUE}
 #Se abre los datos de temperatura superficial del mar
@@ -59,6 +61,10 @@ image.map(lon, lat, ATSM1988, main="Anomalías de TSM del año 1988")
 
 #### Anomalías de la Temperatura Superficial del Mar de Enero (mes cálido) y de Agosto (mes frío)
 
+El siguiente conjunto de  gráficos muestra las temperaturas superficiales del mar en el mes de enero, que representa la época cálida y el mes de agosto, que representa la temporada fría; y se observa además sus respectivas anomalías. 
+Las diferencias de las temperaturas  del mar entre los meses de verano e invierno son marcadas, las temperaturas más altas (25°C- 26°C) se distribuyen cerca a la zona norte del Perú  en los meses de verano, sin embargo en el mes de invierno  las temperaturas  del mar relativamente frías aparecen en toda la costa peruana incluido la zona norte.
+Con los gráficos de las anomalías se puedo observar  la presencia de un aumento de la temperatura  en el mes de enero, producto del debilitamiento de los vientos  y una transferencia de energía a través de la ondas de Kelvin cálidas, que se asocian al desarrollo de un posible evento El niño moderado. 
+
 ```{r}
 #Hallando las anomalías para Enero y Agosto
 ATSM_enero = TSM[,,349] - TSM_allyears 
@@ -74,6 +80,8 @@ image.map(lon, lat, ATSM_agosto, main="Anomalías de Agosto")
 ```
 
 #### Evolución de la Temperatura Superficial del Mar para todos los meses
+
+En el siguiente grupo de figuras se observa la evolución de las temperaturas superficiales del mar a lo largo de los meses. Los cambios estaciones  de la TSM en el año 1988, se proyectan a indicar que en los meses de veranos las temperaturas aumentaron en comparaciones a condiciones cálidas normales, por lo tanto puede reflejar una fase El Niño dentro del ENSO en la región 1+2. Se necesitarían más variables para poder concluir si el año 1988 resulta en un niño canónico. 
 
 ```{r}
 #Para las climatologías se realizaron los siguientes códigos
@@ -106,6 +114,8 @@ for(i in 1:12)
 
 #### Salinidad Superficial del Mar del año 1988
 
+En relación a la salinidad superficial del mar, el año 1988 se caracterizó por presentar valores de salinidad de 35 psu en promedio anual.
+
 ```{r}
 #Se abre los datos de la salinidad superficial del mal
 Sali = nc_open("datos/sss.nc4")
@@ -119,6 +129,8 @@ image.map(lon, lat, sali_mean, main="Salinidad Superficial del Mar de 1988")
 ```
 
 #### Climatologías de Salinidad Superficial del Mar de Enero 
+
+Las climatologías de la salinidad superficial del mar (SSM) indican que los valores fluctuan entre los valores de 35 psu, La evolución mensual de la salinidad indica que hay una variación reducidad de los valores de este parámetro, sin embargo espacialmente se observa que hay zonas de baja salinidad asociada a los aportes de los ríos costeros y también por las aguas de las corrientes ecuaroriales traen aguas con baja salinidad producto de las altas precipitaciones del pacífico ecuatorial.
 
 ```{r}
 #Para las climatologías se realizaron los siguientes códigos
@@ -152,6 +164,8 @@ for(i in 1:12)
 
 #### Gráfica de la Clorofila del Fitoplancton Pequeño y Grande
 
+Se observa que los altos valores de la clorofila del fitoplancton grande y el fitoplancton pequeño se distribuyen espacialmente en zonas distintas de la costa marina.
+
 ```{r}
 #Clorofila del fitoplancton pequeño
 sphy = nc_open("datos/sphy.nc4")
@@ -176,6 +190,8 @@ image.map(lon, lat, lcloro_mean, main="Clorofila Grande")
 
 #### Gráfica de la Clorofila Total
 
+Se sumaron ambos valores de clorofila del fitoplancton pequeño y grande para tener un gráfico de la clorofila total promedi del año 1988. Este parámetro indica por lo tanto la alta productividad del sistema de afloramiento peruano, debido a la surgencia que advecta los nutrientes a la zona fótica superficial.
+
 ```{r}
 #Hallando la clorofila total
 clorofila_total= scloro_mean + lcloro_mean
@@ -184,6 +200,10 @@ image.map(lon, lat, clorofila_total, main="Distribución Promedio de Clorofila T
 ```
 
 #### Distribución de la Clorofila Total en todos los meses del año 1988.
+
+Los mayores valores de clorofila total se dan en verano porque la productividad llega a su máxima en meses cálidos.
+Los siguientes meses serán fase de calma y luego una paulatina disminución de la productiva y con ello se verán beneficiados ciertos organismos fitoplanctónicos.
+
 
 ```{r}
 #Hallando las clorofila total para Enero y Agosto
@@ -214,10 +234,13 @@ image.map(lon, lat, clorofila_total_agosto, main="Clorofila Total Agosto")
 
 ## 4. Conclusiones
 
-  1. 
-  2. 
-  3. 
-  4. 
+  1. El año 1988 se caracteriza como un año de condiciones normales en la temperatura promedio, sin embargo en la época de verano se registraron temperatura superficial mayores al promedio cálido normal, se concluye en un posible evento del niño moderado en la zona 1+2.
+  
+  2. La salinidad del mar peruano en ese año fue de 35 psu en todos los meses, por lo tanto no hay variabilidad temporal marcada. Espacialmente, ocurre que en ciertas zonas del mar la salinidad es baja producto de los aportes de ríos de la costa.
+  
+  3. La clorofila total nos indicó que el año 1988 fue un año de una productividad alta en toda la zona marina costera, especialmente en los meses de verano. 
+  
+  4. Se concluye que el año 1988 es un año con tendencia de una fase cálida más significativa que la fase fría.
 
 ## 5. Referencias
 
