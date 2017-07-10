@@ -35,56 +35,55 @@ Para obtener las imágenes, se utilizaron una serie de códigos, que se observar
 
 ## 3. Resultados y discusión
 
-### 3.1 Análisis de Temperatura Superficial del Mar 
+### 3.1 Análisis de Temperatura Superficial del Mar
 
-```{r eval=FALSE,echo=TRUE}
+#### Temperatura Superficial del Mar y Anomalía del año 1988
+
+```{r echo=TRUE}
 #Se abre los datos de temperatura superficial del mar
 Temp = nc_open("datos/sst.nc4")
 TSM = ncvar_get(Temp, "to")
 lat = ncvar_get(Temp, "latitude")
 lon = ncvar_get(Temp, "longitude") - 360
 time = ncvar_get(Temp, "time")
-#Se calcula el promedio anual (1988) y se grafica
-TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, TSM_mean, main="Gráfica de Distribución de la TSM en el año 1988")
-```
-
-#### Gráficos de Anomalías de la Temperatura Superficial del Mar
-
-```{r}
-Temp = nc_open("datos/sst.nc4")
-TSM = ncvar_get(Temp, "to")
-lat = ncvar_get(Temp, "latitude")
-lon = ncvar_get(Temp, "longitude") - 360
-time = ncvar_get(Temp, "time")
-
+#Se calcula el promedio anual (1988) 
+TSM_mean = apply(TSM[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+#Para hallar la anomalía anual
 TSM_allyears = apply(TSM[,,1:552], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-TSM_mean = apply(TSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-ATSM1988 = TSM_allyears - TSM_mean
-image.map(lon, lat, ATSM1988, main="Gráfica de Anomalías de la Temperatura Superficial del Mar en el año 1988")
+ATSM1988 = TSM_mean - TSM_allyears
+par(mfrow=c(1,2))
+image.map(lon, lat, TSM_mean, main="TSM del año 1988")
+image.map(lon, lat, ATSM1988, main="Anomalías de TSM del año 1988")
 ```
 
+
+#### Anomalías de la Temperatura Superficial del Mar de Enero (mes cálido) y de Agosto (mes frío)
 
 ```{r}
-ATSM_enero = TSM_allyears - TSM[,,350]
-TSM_enero = TSM[,,350]
-par(mfrow=c(1,2))
-image.map(lon, lat, TSM_enero, main="TSM")
-image.map(lon, lat, ATSM_enero, main="Anomalías de TSM")
+#Hallando las anomalías para Enero y Agosto
+ATSM_enero = TSM[,,349] - TSM_allyears 
+TSM_enero = TSM[,,349]
+ATSM_agosto = TSM[,,356] - TSM_allyears 
+TSM_agosto = TSM[,,356]
+#Graficando
+par(mfrow=c(2,2))
+image.map(lon, lat, TSM_enero, main="TSM Enero")
+image.map(lon, lat, ATSM_enero, main="Anomalías de Enero")
+image.map(lon, lat, TSM_agosto, main="TSM Agosto")
+image.map(lon, lat, ATSM_agosto, main="Anomalías de Agosto")
 ```
-
 
 #### Evolución de la Temperatura Superficial del Mar para todos los meses
 
 ```{r}
+#Para las climatologías se realizaron los siguientes códigos
 Temp = nc_open("datos/sst.nc4")
 TSM = ncvar_get(Temp, "to")
 lat = ncvar_get(Temp, "latitude")
 lon = ncvar_get(Temp, "longitude") - 360
 time = ncvar_get(Temp, "time")
 
-year1988=time[350:361]
-
+year1988=time[349:360]
 meses=rep(1:12,length=length(year1988))
 
 for(i in 1:12){
@@ -97,7 +96,6 @@ for(i in 1:12){
   clim[,,i]=apply(TSM[,,meses==i],MARGIN=c(1,2),
                   FUN=mean,na.rm=TRUE)
 }
-
 par(mfrow=c(4,3),mar=c(4,4,1,1))
 for(i in 1:12)
   image.map(lon,lat,clim[,,i])
@@ -106,42 +104,113 @@ for(i in 1:12)
 
 ### 3.2 Análisis de la Salinidad Superficial del Mar
 
+#### Salinidad Superficial del Mar del año 1988
+
 ```{r}
+#Se abre los datos de la salinidad superficial del mal
 Sali = nc_open("datos/sss.nc4")
 SSM = ncvar_get(Sali, "so")
 lat = ncvar_get(Sali, "latitude")
 lon = ncvar_get(Sali, "longitude") - 360
 time = ncvar_get(Sali, "time")
-sali_mean = apply(SSM[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, sali_mean, main="Gráfica de Distribución Promedio de Salinidad en el año 1988")
+#Se calcula el promedio anual (1988) y se grafica
+sali_mean = apply(SSM[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+image.map(lon, lat, sali_mean, main="Salinidad Superficial del Mar de 1988")
+```
+
+#### Climatologías de Salinidad Superficial del Mar de Enero 
+
+```{r}
+#Para las climatologías se realizaron los siguientes códigos
+Sali = nc_open("datos/sss.nc4")
+SSM = ncvar_get(Sali, "so")
+lat = ncvar_get(Sali, "latitude")
+lon = ncvar_get(Sali, "longitude") - 360
+time = ncvar_get(Sali, "time")
+
+year1988=time[349:360]
+meses=rep(1:12,length=length(year1988))
+
+for(i in 1:12){
+  apply(SSM[,,meses==1],MARGIN=c(1,2),
+        FUN=mean,na.rm=TRUE)}
+
+clim=array(dim=c(dim(SSM)[1:2],12))
+
+for(i in 1:12){
+  clim[,,i]=apply(SSM[,,meses==i],MARGIN=c(1,2),
+                  FUN=mean,na.rm=TRUE)
+}
+
+par(mfrow=c(4,3),mar=c(4,4,1,1))
+for(i in 1:12)
+  image.map(lon,lat,clim[,,i])
 ```
 
 
 ### 3.3 Análisis espacial y temporal de la Clorofila Total
 
-#### Gráfica de la Clorofila del Fitoplancton Pequeño
+#### Gráfica de la Clorofila del Fitoplancton Pequeño y Grande
 
 ```{r}
+#Clorofila del fitoplancton pequeño
 sphy = nc_open("datos/sphy.nc4")
 sclorofila = ncvar_get(sphy, "intpp")
 lat = ncvar_get(sphy, "latitude")
 lon = ncvar_get(sphy, "longitude") - 360
-scloro_mean = apply(sclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, scloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
-```
+scloro_mean = apply(sclorofila[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
 
-#### Gráfica de la Clorofila del Fitoplancton Grande
-
-```{r}
+#Clorofila del fitoplancton grande
 lphy = nc_open("datos/lphy.nc4")
 lclorofila = ncvar_get(lphy, "intpp")
 lat = ncvar_get(lphy, "latitude")
 lon = ncvar_get(lphy, "longitude") - 360
-lcloro_mean = apply(lclorofila[,,350:361], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
-image.map(lon, lat, lcloro_mean, main="Gráfica de Distribución Promedio de Clorofila en el año 1988")
+lcloro_mean = apply(lclorofila[,,349:360], MARGIN = c(1,2), FUN = mean, na.rm = TRUE)
+
+#Graficando las dos clorofilas
+par(mfrow=c(1,2))
+image.map(lon, lat, scloro_mean, main="Clorofila Pequeña")
+image.map(lon, lat, lcloro_mean, main="Clorofila Grande")
 ```
 
+
 #### Gráfica de la Clorofila Total
+
+```{r}
+#Hallando la clorofila total
+clorofila_total= scloro_mean + lcloro_mean
+image.map(lon, lat, clorofila_total, main="Distribución Promedio de Clorofila Total en el año 1988")
+
+```
+
+#### Distribución de la Clorofila Total en todos los meses del año 1988.
+
+```{r}
+#Hallando las clorofila total para Enero y Agosto
+sphy = nc_open("datos/sphy.nc4")
+sclorofila = ncvar_get(sphy, "intpp")
+lat = ncvar_get(sphy, "latitude")
+lon = ncvar_get(sphy, "longitude") - 360
+scloro_enero = sclorofila[,,349]
+scloro_agosto = sclorofila[,,356]
+
+lphy = nc_open("datos/lphy.nc4")
+lclorofila = ncvar_get(lphy, "intpp")
+lat = ncvar_get(lphy, "latitude")
+lon = ncvar_get(lphy, "longitude") - 360
+lcloro_enero = lclorofila[,,349]
+lcloro_agosto = lclorofila[,,356]
+
+clorofila_total_enero= scloro_enero + lcloro_enero
+clorofila_total_agosto= scloro_agosto + lcloro_agosto
+
+#Graficando
+par(mfrow=c(1,2))
+image.map(lon, lat, clorofila_total_enero, main="Clorofila Total Enero")
+image.map(lon, lat, clorofila_total_agosto, main="Clorofila Total Agosto")
+
+```
+
 
 ## 4. Conclusiones
 
